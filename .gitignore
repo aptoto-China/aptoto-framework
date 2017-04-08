@@ -10,3 +10,15 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# Eclipse 配置文件
+*.project
+*.classpath
+/*/.settings/
+/.settings/
+/*/.gitignore
+
+# Maven 打包结果
+/*/target/
+/target/
+
