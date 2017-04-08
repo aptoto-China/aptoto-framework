@@ -16,7 +16,6 @@ hs_err_pid*
 *.classpath
 /*/.settings/
 /.settings/
-/*/.gitignore
 
 # Maven 打包结果
 /*/target/
