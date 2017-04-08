@@ -13,4 +13,8 @@
 		<module>core</module>
 		<module>frontend</module>
 	</modules>
+	
+	<dependencyManagement>
+	
+	</dependencyManagement>
 </project>
