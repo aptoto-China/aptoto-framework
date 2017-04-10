@@ -1,6 +1,5 @@
 package com.aptoto.framework.pojo.query;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -92,8 +91,10 @@ public class ConditionItem implements java.io.Serializable {
     
     @Override
     public boolean equals(Object obj) {
+        String currentObjJson = this.toString();
+        String referenceObjJson = new GsonBuilder().create().toJson(obj);
         //暂未知是否需要重写
-        return super.equals(obj);
+        return currentObjJson.equals(referenceObjJson);
     }
     
     @Override
