@@ -1,5 +1,6 @@
 package com.aptoto.framework.pojo.query;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,10 +10,6 @@ import com.google.gson.GsonBuilder;
 /**
  * 指定特定属性具体的查询方式
  * 查询方式包含：属性标识+运算方式+符合条件的值（如，age>18）
- * 数据规则：
- * 一元运算的值可以赋给targetValue或multiValue[0]，targetValue值得优先级较高
- * 多元运算的值可以赋给multiValue
- * 是否为空检查可以赋值null
  * 
  * @author Orion
  * @since 0.2-RELEASE
@@ -25,44 +22,29 @@ public class ConditionItem implements java.io.Serializable {
     private String attributeName;
     /* 运算方式 @see com.aptoto.framework.pojo.query.RangeType */
     private RangeType rangeType;
-    /* 符合条件的数据（一元运算）  */
-    private String targetValue;
-    /* 符合条件的数据（多元运算）  */
-    private List<String> multiValue;
+    /* 符合条件的数据  */
+    private List<String> targetValue;
     
-    public ConditionItem() {}
-    
-    /**
-     * 构建查询条件对象
-     * 该查询主要用于封装一元运算 和 状态运算（是否为空）
-     * 另外也可以用于封装元运算中的一元
-     * @param attributeName
-     * @param rangeType
-     * @param targetValue
-     * @since 0.2-RELEASE
-     */
-    public ConditionItem(String attributeName, RangeType rangeType, String targetValue) {
+    public ConditionItem() {
         super();
-        this.attributeName = attributeName;
-        this.rangeType = rangeType;
-        this.targetValue = targetValue;
+        this.targetValue = new ArrayList<String>();
     }
     
     /**
      * 构建查询条件对象
-     * 该查询主要用于封装多元运算
-     * 另外也可以用于封装一元运算（值赋给数组下标为0的元素） 和 状态运算（是否为空）
      * @param attributeName
      * @param rangeType
-     * @param multiValue
-     * @since 0.2-RELEASE
+     * @param values
      */
-    public ConditionItem(String attributeName, RangeType rangeType, String[] multiValue) {
+    public ConditionItem(String attributeName, RangeType rangeType, String... values) {
         super();
         this.attributeName = attributeName;
         this.rangeType = rangeType;
-        if (multiValue!=null)
-            this.multiValue = Arrays.asList(multiValue);
+        
+        if (values==null || values.length==0)
+            this.targetValue = new ArrayList<String>();
+        else
+            this.targetValue = Arrays.asList(values);
     }
     
     /**
@@ -80,10 +62,9 @@ public class ConditionItem implements java.io.Serializable {
             return false;
         
         //运算值不可为空（是否为空除外）
-        boolean isTargetValueNull = targetValue==null || "".equals(targetValue);
-        boolean isMultiValueNull = multiValue==null || multiValue.size()==0 || multiValue.get(0)==null || "".equals(multiValue.get(0));
+        boolean isTargetValueNull = targetValue==null || targetValue.size()==0 || targetValue.get(0)==null || "".equals(targetValue.get(0));
         boolean needValue = ! (RangeType.NULL.equals(rangeType) || RangeType.NOT_NULL.equals(rangeType) );
-        if (needValue && isTargetValueNull && isMultiValueNull )
+        if (needValue && isTargetValueNull )
             return false;
         
         return true;
@@ -102,7 +83,27 @@ public class ConditionItem implements java.io.Serializable {
         Gson gson = new GsonBuilder().create();
         return gson.toJson(this);
     }
-
+    
+    /**
+     * 追加查询值
+     * @param targetValue
+     * @return 当前对象
+     */
+    public ConditionItem addTargetValue(String... targetValue) {
+        if (targetValue==null || targetValue.length==0)
+            this.targetValue.addAll(Arrays.asList(targetValue));
+        return this;
+    }
+    
+    /**
+     * 适用于等于、包含、大于、小于等一元运算
+     * @return 符合条件的数值
+     */
+    public String getSingleValue() {
+        if ( targetValue==null || targetValue.size()==0 )
+            return null;
+        return targetValue.get(0);
+    }
 
     /*********************************************************
      *                                                       *
@@ -139,37 +140,23 @@ public class ConditionItem implements java.io.Serializable {
     }
 
     /**
-     * @return the 符合条件的数据（一元运算）
+     * @return the 符合条件的数据
      */
-    public String getTargetValue() {
+    public List<String> getTargetValue() {
         return targetValue;
     }
 
     /**
-     * @param targetValue the 符合条件的数据（一元运算） to set
+     * @param targetValue the 符合条件的数据 to set
      */
-    public void setTargetValue(String targetValue) {
+    public void setTargetValue(List<String> targetValue) {
         this.targetValue = targetValue;
-    }
-
-    /**
-     * @return the 符合条件的数据（多元运算）
-     */
-    public List<String> getMultiValue() {
-        return multiValue;
-    }
-
-    /**
-     * @param multiValue the 符合条件的数据（多元运算） to set
-     */
-    public void setMultiValue(String... multiValue) {
-        this.multiValue = Arrays.asList(multiValue);
     }
     
     /**
-     * @param multiValue the 符合条件的数据（多元运算） to set
+     * @param targetValue the 符合条件的数据 to set
      */
-    public void setMultiValue(List<String> multiValue) {
-        this.multiValue = multiValue;
+    public void setTargetValue(String... targetValue) {
+        this.targetValue = Arrays.asList(targetValue);
     }
 }
