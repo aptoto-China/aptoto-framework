@@ -6,6 +6,6 @@ package com.aptoto.framework;
  * @since 0.2-RELEASE
  * 2017年4月10日
  */
-public interface BackupUpdatedData {
+public interface IBackupAsUpdate {
 
 }
