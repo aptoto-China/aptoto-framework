@@ -12,4 +12,15 @@
 	<build>
 		<finalName>aptoto-framework-frontend-${project.version}</finalName>
 	</build>
+	<dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.aptoto.framework</groupId>
+			<artifactId>pojo</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
 </project>
